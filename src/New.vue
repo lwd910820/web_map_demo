@@ -501,8 +501,8 @@ export default {
       for (let i = -rowMinNum; i <= rowMaxNum; i++) {
         for (let j = -colMinNum; j <= colMaxNum; j++) {
           // 当前瓦片的行列号
-          let row = centerTile[0] + i;
-          let col = centerTile[1] + j;
+          let row = (centerTile[0] + i) % (Math.pow(2, this.zoom));
+          let col = (centerTile[1] + j) % (Math.pow(2, this.zoom));
           // 当前瓦片的显示位置
           let _j = j
           // 百度地图，坐标系和画布坐标系y轴相反
