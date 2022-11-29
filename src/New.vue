@@ -74,6 +74,7 @@ import {
   resolutions,
   mercatorToLngLat,
   KEY,
+  resolveRoundLngLat,
   getRandomDomainIndex
 } from "./utils";
 import gcoord from 'gcoord';
@@ -496,12 +497,14 @@ export default {
       );
       // y轴向上
       let axisYIsTop = this.selectMapData.axis ? this.selectMapData.axis[1] === 'top' : false
+      // 当前zoom层级下最大瓦片数量
+      let zoomXAndY = Math.pow(2, this.zoom);
       this.currentTileCache = {}; // 清空缓存对象
       // 渲染画布内所有瓦片
       for (let i = -rowMinNum; i <= rowMaxNum; i++) {
         for (let j = -colMinNum; j <= colMaxNum; j++) {
           // 当前瓦片的行列号
-          let row = centerTile[0] + i;
+          let row = (centerTile[0] + i + zoomXAndY) % zoomXAndY;
           let col = centerTile[1] + j;
           // 当前瓦片的显示位置
           let _j = j
@@ -613,7 +616,7 @@ export default {
       let my = e.movementY * (this.selectMapData.resolutions || resolutions)[this.zoom];
       let [x, y] = (this.selectMapData.lngLatToMercator || lngLatToMercator)(...this.center);
       // 更新拖动后的中心点经纬度
-      this.center = (this.selectMapData.mercatorToLngLat || mercatorToLngLat)(x - mx, my + y);
+      this.center = resolveRoundLngLat(...(this.selectMapData.mercatorToLngLat || mercatorToLngLat)(x - mx, my + y));
       // 清除画布重新渲染瓦片
       this.clearLayer();
       this.renderTiles();
