@@ -98,6 +98,13 @@ export const getRandomDomainIndex = (url) => {
     return null
 }
 
+// 经纬度坐标循环
+export const resolveRoundLngLat = (lng, lat) => {
+    lng = (lng + 180) % 360 - 180
+    lat = (lat + 90) % 180 - 90
+    return [lng, lat]
+}
+
 // 拼接瓦片地址
 export const getTileUrlPro = (x, y, z, url, {transformXYZ, getTileUrl} = {}) => {
     // 检查是否支持多个子域
